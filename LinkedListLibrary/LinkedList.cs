@@ -292,14 +292,21 @@ namespace LinkedListLibrary
 
             Node<T> new_node = new Node<T>(item);
 
-            new_node.next = node.next;
-            new_node.prev = node;
-            node.next.prev = new_node;
-            node.next = new_node;
+            if (node.next != null)
+            {
+                new_node.next = node.next;
+                new_node.prev = node;
+                node.next.prev = new_node;
+                node.next = new_node;
 
-            count++;
+                count++;
 
-            ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+                ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+            }
+            else
+            {
+                 new_node = AddLast(item);
+            }
 
             return new_node;
         }
@@ -313,14 +320,21 @@ namespace LinkedListLibrary
 
             Node<T> new_node = new Node<T>(item);
 
-            new_node.next = node;
-            new_node.prev = node.prev;
-            node.prev.next = new_node;
-            node.prev = new_node;
+            if (node.prev != null)
+            {
+                new_node.next = node;
+                new_node.prev = node.prev;
+                node.prev.next = new_node;
+                node.prev = new_node;
 
-            count++;
+                count++;
 
-            ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+                ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+            }
+            else
+            {
+                new_node = AddFirst(item);
+            }
 
             return new_node;
         }
