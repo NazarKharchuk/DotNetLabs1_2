@@ -13,16 +13,20 @@ namespace Lab1_2
             try
             {
                 MyLinkedList<int> list = new MyLinkedList<int>();
+                list.ItemAddedEvent += ItemAddedHandler;
+                list.ItemRemovedEvent += ItemRemovedHandler;
+                list.ListClearedEvent += ListClearedHandler;
 
                 list.Add(1);
                 list.Add(3);
                 list.Add(5);
                 list.Print();
 
-                foreach(int i in list.Reverse)
-                {
-                    Console.WriteLine(i);
-                }
+                list.RemoveFirst();
+                list.Print();
+
+                list.Clear();
+                list.Print();
 
                 //Console.WriteLine($"Count: {list.Count}");
                 /*LinkedList<int> list2 = new LinkedList<int>();
@@ -39,6 +43,21 @@ namespace Lab1_2
             }
 
 
+        }
+
+        static void ItemAddedHandler(object sender, ItemAddedEventArgs<int> e)
+        {
+            Console.WriteLine("Item {0} added at {1}.", e.item, e.time);
+        }
+
+        static void ItemRemovedHandler(object sender, ItemRemovedEventArgs<int> e)
+        {
+            Console.WriteLine("Item {0} removed at {1}.", e.item, e.time);
+        }
+
+        static void ListClearedHandler(object sender, ListClearedEventArgs<int> e)
+        {
+            Console.WriteLine("List is cleared at {0}.", e.time);
         }
     }
 }

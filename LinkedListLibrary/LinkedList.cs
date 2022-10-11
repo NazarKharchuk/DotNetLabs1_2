@@ -9,6 +9,10 @@ namespace LinkedListLibrary
         private int count;
         private Node<T> head;
 
+        public event EventHandler<ItemAddedEventArgs<T>> ItemAddedEvent;
+        public event EventHandler<ItemRemovedEventArgs<T>> ItemRemovedEvent;
+        public event EventHandler<ListClearedEventArgs<T>> ListClearedEvent;
+
         public int Count {
             get { return count; }
         }
@@ -69,6 +73,8 @@ namespace LinkedListLibrary
             }
             count = 0;
             head = null;
+
+            ListClearedEvent?.Invoke(this, new ListClearedEventArgs<T>());
         }
 
         public bool Contains(T item)
@@ -92,6 +98,8 @@ namespace LinkedListLibrary
 
             head = node;
 
+            ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+
             return node;
         }
 
@@ -109,6 +117,7 @@ namespace LinkedListLibrary
             {
                 node.prev = null;
                 head = node;
+                ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
                 return node;
             }
 
@@ -121,11 +130,14 @@ namespace LinkedListLibrary
 
             node.prev = last;
 
+            ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+
             return node;
         }
 
         public void RemoveFirst()
         {
+            T item;
             if(head == null)
             {
                 throw new InvalidOperationException("List contains no elements");
@@ -133,21 +145,26 @@ namespace LinkedListLibrary
 
             if(head.next == null)
             {
+                item = head.Value;
                 head.Invalidate();
                 head = null;
             }
             else
             {
+                item = head.Value;
                 Node<T> temp = head;
                 head = temp.next;
                 head.prev = null;
                 temp.Invalidate();
             }
             count--;
+
+            ItemRemovedEvent?.Invoke(this, new ItemRemovedEventArgs<T>(item));
         }
 
         public void RemoveLast()
         {
+            T item;
             if (head == null)
             {
                 throw new InvalidOperationException("List contains no elements");
@@ -155,16 +172,20 @@ namespace LinkedListLibrary
 
             if (head.next == null)
             {
+                item = head.Value;
                 head.Invalidate();
                 head = null;
             }
             else
             {
                 Node<T> last = Last;
+                item = last.Value;
                 last.prev.next = null;
                 last.Invalidate();
             }
             count--;
+
+            ItemRemovedEvent?.Invoke(this, new ItemRemovedEventArgs<T>(item));
         }
 
         public Node<T> Find(T item)
@@ -216,6 +237,8 @@ namespace LinkedListLibrary
                     node.prev.next = node.next;
                     node.Invalidate();
                     count--;
+
+                    ItemRemovedEvent?.Invoke(this, new ItemRemovedEventArgs<T>(item));
                 }
                 else
                 {
@@ -275,6 +298,9 @@ namespace LinkedListLibrary
             node.next = new_node;
 
             count++;
+
+            ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+
             return new_node;
         }
 
@@ -293,6 +319,9 @@ namespace LinkedListLibrary
             node.prev = new_node;
 
             count++;
+
+            ItemAddedEvent?.Invoke(this, new ItemAddedEventArgs<T>(item));
+
             return new_node;
         }
 
