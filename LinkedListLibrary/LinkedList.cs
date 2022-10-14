@@ -353,21 +353,6 @@ namespace LinkedListLibrary
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public IEnumerable<T> Reverse
-        {
-            get
-            {
-                if (head == null) yield break;
-
-                Node<T> node = Last;
-                while (node != null)
-                {
-                    yield return node.Value;
-                    node = node.prev;
-                }
-            }
-        }
-
         public void Print()
         {
             Console.Write("List: ");
